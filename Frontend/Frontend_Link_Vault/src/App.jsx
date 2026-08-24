@@ -1,13 +1,11 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import { mockLinks } from './mockData/mockLinks'
-import './App.css'
+import { useState } from "react";
+import { mockLinks } from "./mockData/mockLinks";
+import LinkCard from "./components/LinkCard";
+import "./App.css";
 
 function App() {
   return (
-     <div className="app">
+    <div className="app">
       <header className="app-header">
         <h1 className="brand">Video Link Vault</h1>
         <div className="header-actions">
@@ -27,12 +25,12 @@ function App() {
             {/* Step 6: search box + date filter */}
           </div>
 
-          <div className="chips">
-            {/* Step 5: platform filter chips */}
-          </div>
+          <div className="chips">{/* Step 5: platform filter chips */}</div>
 
           <div className="card-grid">
-            {/* Step 4: link cards */}
+            {mockLinks.map((link) => (
+              <LinkCard key={link.id} link={link} />
+            ))}
           </div>
         </main>
       </div>
@@ -52,7 +50,7 @@ function App() {
         </nav>
       </footer>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

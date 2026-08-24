@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { mockLinks } from "./mockData/mockLinks";
 import LinkCard from "./components/LinkCard";
+import CategorySidebar from "./components/CategorySidebar";
 import "./App.css";
 
 const PLATFORMS = ["All", "TikTok", "YouTube", "Instagram", "Facebook"];
 
+const ALL = "All links";
 const TIME_RANGES = [
   { label: "Any time", days: null },
   { label: "Past week", days: 7 },
@@ -17,8 +19,10 @@ function App() {
   const [platform, setPlatform] = useState("All");
   //State for search query and time range filter
   const [query, setQuery] = useState("");
+  //State for category filter
   const [timeRange, setTimeRange] = useState("Any time");
-
+  //State for category filter
+  const [category, setCategory] = useState(ALL);
   // Normalize the search query for case-insensitive matching
   const normalizedQuery = query.trim().toLowerCase();
 
@@ -26,7 +30,6 @@ function App() {
   const range = TIME_RANGES.find((r) => r.label === timeRange);
 
   // Filter the mockLinks based on platform, search query, and time range
-
   const visibleLinks = mockLinks.filter((link) => {
     const matchesPlatform = platform === "All" || link.platform === platform;
 
@@ -40,8 +43,44 @@ function App() {
       range.days === null ||
       (Date.now() - new Date(link.createdAtUtc)) / 86400000 <= range.days;
 
-    return matchesPlatform && matchesQuery && matchesTime;
+    const matchesCategory = category === ALL || link.category === category;
+
+    return matchesPlatform && matchesQuery && matchesTime && matchesCategory;
   });
+
+  // The user's categories. Seeded once from the mock data, then owned by the user.
+  const [categoryList, setCategoryList] = useState(() => [
+    ...new Set(mockLinks.map((link) => link.category)),
+  ]);
+
+  // Count how many links are in each category (name -> count)
+  const categoryCounts = new Map();
+  for (const link of mockLinks) {
+    categoryCounts.set(
+      link.category,
+      (categoryCounts.get(link.category) ?? 0) + 1,
+    );
+  }
+
+  // One row per user category, plus the "All links" pseudo-row on top
+  const categories = [
+    [ALL, mockLinks.length],
+    ...categoryList.map((name) => [name, categoryCounts.get(name) ?? 0]),
+  ];
+
+  // Add a new category, unless it is blank or already exists.
+  // App owns the list, so App enforces the rules.
+  function createCategory(rawName) {
+    const name = rawName.trim();
+    const taken = [ALL, ...categoryList].some(
+      (c) => c.toLowerCase() === name.toLowerCase(),
+    );
+
+    if (name === "" || taken) return;
+
+    setCategoryList([...categoryList, name]);
+    setCategory(name);
+  }
 
   return (
     //Header
@@ -54,11 +93,12 @@ function App() {
         </div>
       </header>
       <div className="app-body">
-        <aside className="sidebar">
-          <h2 className="sidebar-title">Categories</h2>
-          {/* Step 7: category list goes here */}
-        </aside>
-
+        <CategorySidebar
+          categories={categories}
+          selected={category}
+          onSelect={setCategory}
+          onCreate={createCategory}
+        />
         <main className="content">
           <div className="toolbar">
             <div className="search">
@@ -124,11 +164,10 @@ function App() {
               <LinkCard key={link.id} link={link} />
             ))}
           </div>
-          <div className="no-results">
-            {visibleLinks.length === 0 && (
-              <p className="empty">No links match your filters.</p>
-            )}
-          </div>
+
+          {visibleLinks.length === 0 && (
+            <p className="empty">No links match your filters.</p>
+          )}
         </main>
       </div>
 

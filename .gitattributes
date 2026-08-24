@@ -1,0 +1,24 @@
+# Normalize all text files to LF in the repository
+* text=auto eol=lf
+
+# Windows-native scripts that genuinely need CRLF
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
+
+# Visual Studio rewrites these with CRLF; declaring it avoids phantom diffs
+*.sln  text eol=crlf
+*.slnx text eol=crlf
+
+# Binary files — no line-ending conversion, no text diffing
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.docx binary
+*.xlsx binary
+*.pptx binary
+*.dll  binary
+*.exe  binary

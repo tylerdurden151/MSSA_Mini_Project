@@ -110,3 +110,23 @@
 .footer-links a:hover {
   color: var(--text);
 }
+
+.chip {
+  padding: 5px 12px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: rgba(145, 132, 217, 0.12);
+  color: var(--accent);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.chip:hover {
+  background: rgba(145, 132, 217, 0.22);
+}
+
+.chip-active {
+  background: rgba(145, 132, 217, 0.38);
+  color: var(--text);
+  font-weight: 600;
+}

@@ -3,8 +3,16 @@ import { mockLinks } from "./mockData/mockLinks";
 import LinkCard from "./components/LinkCard";
 import "./App.css";
 
+const PLATFORMS = ["All", "TikTok", "YouTube", "Instagram", "Facebook"];
+
 function App() {
+  const [platform, setPlatform] = useState("All");
+  const visibleLinks =
+    platform === "All"
+      ? mockLinks
+      : mockLinks.filter((link) => link.platform === platform);
   return (
+    //Header
     <div className="app">
       <header className="app-header">
         <h1 className="brand">Video Link Vault</h1>
@@ -13,7 +21,6 @@ function App() {
           <button className="btn-ghost">Log in</button>
         </div>
       </header>
-
       <div className="app-body">
         <aside className="sidebar">
           <h2 className="sidebar-title">Categories</h2>
@@ -25,10 +32,20 @@ function App() {
             {/* Step 6: search box + date filter */}
           </div>
 
-          <div className="chips">{/* Step 5: platform filter chips */}</div>
+          <div className="chips">
+            {PLATFORMS.map((name) => (
+              <button
+                key={name}
+                className={name === platform ? "chip chip-active" : "chip"}
+                onClick={() => setPlatform(name)}
+              >
+                {name}
+              </button>
+            ))}
+          </div>
 
           <div className="card-grid">
-            {mockLinks.map((link) => (
+            {visibleLinks.map((link) => (
               <LinkCard key={link.id} link={link} />
             ))}
           </div>
@@ -39,7 +56,7 @@ function App() {
         <div>
           <div>Video Link Vault</div>
           <div className="muted">
-            {mockLinks.length} saved · {mockLinks.length} shown
+            {mockLinks.length} saved · {visibleLinks.length} shown
           </div>
         </div>
         <nav className="footer-links">

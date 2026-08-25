@@ -20,6 +20,13 @@ function LinkCard({ link, onDelete }) {
             <path d="M8 5l12 7-12 7z" fill="currentColor" />
           </svg>
         )}
+        <a
+          className="card-open"
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Open ${link.title} on ${link.platform}`}
+        />
         <span className="card-platform">{link.platform}</span>
 
         <button

@@ -9,7 +9,7 @@ function formatAdded(isoDate) {
   return `Added ${days}d ago`;
 }
 
-function LinkCard({ link }) {
+function LinkCard({ link, onDelete }) {
   return (
     <article className="card">
       <div className="card-thumb">
@@ -21,6 +21,23 @@ function LinkCard({ link }) {
           </svg>
         )}
         <span className="card-platform">{link.platform}</span>
+
+        <button
+          className="card-delete"
+          aria-label={`Delete ${link.title}`}
+          onClick={() => onDelete(link.id)}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M4 6h16M9 6V4h6v2M7 6l1 14h8l1-14"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
       </div>
 
       <div className="card-body">

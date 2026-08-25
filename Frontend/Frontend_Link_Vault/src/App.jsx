@@ -93,6 +93,10 @@ function App() {
     setLinks([newLink, ...links]);
   }
 
+  // Remove a link by id. .filter() returns a new array, so React sees the change.
+  function deleteLink(id) {
+    setLinks(links.filter((link) => link.id !== id));
+  }
   return (
     //Header
     <div className="app">
@@ -135,7 +139,7 @@ function App() {
 
           <div className="card-grid">
             {visibleLinks.map((link) => (
-              <LinkCard key={link.id} link={link} />
+              <LinkCard key={link.id} link={link} onDelete={deleteLink} />
             ))}
           </div>
 
@@ -149,7 +153,7 @@ function App() {
         <div>
           <div>Video Link Vault</div>
           <div className="muted">
-            {mockLinks.length} saved · {visibleLinks.length} shown
+            {links.length} saved · {visibleLinks.length} shown
           </div>
         </div>
         <nav className="footer-links">

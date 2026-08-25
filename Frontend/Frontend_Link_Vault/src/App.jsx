@@ -21,7 +21,7 @@ function App() {
   const [platform, setPlatform] = useState("All");
   //State for search query and time range filter
   const [query, setQuery] = useState("");
-  //State for category filter
+  //State for time range filter
   const [timeRange, setTimeRange] = useState("Any time");
   //State for category filter
   const [category, setCategory] = useState(ALL);
@@ -36,7 +36,9 @@ function App() {
   // render impure (React lint flags it) — the value must be stable per render.
   const [now] = useState(() => Date.now());
 
-  // Find the selected time range object based on the current timeRange state
+  // Filter the links based on the selected time range. The TIME_RANGES array is
+  // a constant, so we can find the selected range by label. The range object has
+  // a .days property, which is either null (no limit) or a number of days.
   const range = TIME_RANGES.find((r) => r.label === timeRange);
 
   // Filter the mockLinks based on platform, search query, and time range

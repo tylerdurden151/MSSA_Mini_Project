@@ -63,8 +63,16 @@ function AddLinkDialog({
         if (e.key === "Escape") onClose();
       }}
     >
-      <div className="dialog" onClick={(e) => e.stopPropagation()}>
-        <h2 className="dialog-title">Add a link</h2>
+      <div
+        className="dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-link-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 className="dialog-title" id="add-link-title">
+          Add a link
+        </h2>
 
         <div className="dialog-body">
           <label className="field">

@@ -55,12 +55,6 @@
   min-width: 0;
 }
 
-.toolbar {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
 .chips {
   display: flex;
   gap: 8px;

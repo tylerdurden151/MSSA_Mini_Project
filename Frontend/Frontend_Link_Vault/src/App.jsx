@@ -3,6 +3,7 @@ import { mockLinks } from "./mockData/mockLinks";
 import LinkCard from "./components/LinkCard";
 import SearchBar from "./components/SearchBar";
 import CategorySidebar from "./components/CategorySidebar";
+import AddLinkDialog from "./components/AddLinkDialog";
 import "./App.css";
 
 const PLATFORMS = ["All", "TikTok", "YouTube", "Instagram", "Facebook"];
@@ -24,14 +25,19 @@ function App() {
   const [timeRange, setTimeRange] = useState("Any time");
   //State for category filter
   const [category, setCategory] = useState(ALL);
+  //State for the add link dialog
+  const [dialogOpen, setDialogOpen] = useState(false);
   // Normalize the search query for case-insensitive matching
   const normalizedQuery = query.trim().toLowerCase();
+  // The saved links themselves. Seeded from mock data, then owned by the user —
+  // Step 8 is the first step where this is no longer a fixed module constant.
+  const [links, setLinks] = useState(mockLinks);
 
   // Find the selected time range object based on the current timeRange state
   const range = TIME_RANGES.find((r) => r.label === timeRange);
 
   // Filter the mockLinks based on platform, search query, and time range
-  const visibleLinks = mockLinks.filter((link) => {
+  const visibleLinks = links.filter((link) => {
     const matchesPlatform = platform === "All" || link.platform === platform;
 
     const matchesQuery =
@@ -56,7 +62,7 @@ function App() {
 
   // Count how many links are in each category (name -> count)
   const categoryCounts = new Map();
-  for (const link of mockLinks) {
+  for (const link of links) {
     categoryCounts.set(
       link.category,
       (categoryCounts.get(link.category) ?? 0) + 1,
@@ -65,7 +71,7 @@ function App() {
 
   // One row per user category, plus the "All links" pseudo-row on top
   const categories = [
-    [ALL, mockLinks.length],
+    [ALL, links.length],
     ...categoryList.map((name) => [name, categoryCounts.get(name) ?? 0]),
   ];
 
@@ -82,6 +88,10 @@ function App() {
     setCategoryList([...categoryList, name]);
     setCategory(name);
   }
+  // Add a new link. App owns the list, so App is where it changes.
+  function addLink(newLink) {
+    setLinks([newLink, ...links]);
+  }
 
   return (
     //Header
@@ -89,7 +99,9 @@ function App() {
       <header className="app-header">
         <h1 className="brand">Video Link Vault</h1>
         <div className="header-actions">
-          <button className="btn-primary">Add link +</button>
+          <button className="btn-primary" onClick={() => setDialogOpen(true)}>
+            Add link +
+          </button>
           <button className="btn-ghost">Log in</button>
         </div>
       </header>
@@ -147,6 +159,15 @@ function App() {
           <a href="#">Help</a>
         </nav>
       </footer>
+      {dialogOpen && (
+        <AddLinkDialog
+          platforms={PLATFORMS.slice(1)}
+          categoryOptions={categoryList}
+          defaultCategory={category === ALL ? categoryList[0] : category}
+          onAdd={addLink}
+          onClose={() => setDialogOpen(false)}
+        />
+      )}
     </div>
   );
 }

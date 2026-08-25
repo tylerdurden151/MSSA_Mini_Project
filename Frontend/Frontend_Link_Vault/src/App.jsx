@@ -32,6 +32,9 @@ function App() {
   // The saved links themselves. Seeded from mock data, then owned by the user —
   // Step 8 is the first step where this is no longer a fixed module constant.
   const [links, setLinks] = useState(mockLinks);
+  // "Now", captured once at mount. Calling Date.now() during render makes the
+  // render impure (React lint flags it) — the value must be stable per render.
+  const [now] = useState(() => Date.now());
 
   // Find the selected time range object based on the current timeRange state
   const range = TIME_RANGES.find((r) => r.label === timeRange);
@@ -48,7 +51,7 @@ function App() {
 
     const matchesTime =
       range.days === null ||
-      (Date.now() - new Date(link.createdAtUtc)) / 86400000 <= range.days;
+      (now - new Date(link.createdAtUtc)) / 86400000 <= range.days;
 
     const matchesCategory = category === ALL || link.category === category;
 

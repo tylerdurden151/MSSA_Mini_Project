@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+namespace Backend_Link_Vault.DTO;
+
 public class RegisterRequest
 {
     [Required]

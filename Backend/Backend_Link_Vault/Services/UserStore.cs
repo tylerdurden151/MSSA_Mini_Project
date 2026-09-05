@@ -1,8 +1,28 @@
 ﻿using System;
+using Backend_Link_Vault.Models;
+namespace Backend_Link_Vault.Services;
 
-public class Class1
+public class UserStore
 {
-	public Class1()
-	{
-	}
+    private readonly List<User> _users = new List<User>();
+
+    public User? FindByEmail(string email)
+    {
+        return _users.FirstOrDefault(u =>
+            string.Equals(
+                u.Email,
+                email,
+                StringComparison.OrdinalIgnoreCase));
+    }
+    public User Add(User user)
+    {
+        user.Id = Guid.NewGuid();
+        _users.Add(user);
+        return user;
+    }
+
+    public IReadOnlyList<User> GetAllUsers()
+    {
+        return _users.AsReadOnly();
+    }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
 
+namespace Backend_Link_Vault.Models;
+
 public class User
 {
 	private string _email; 
-	public int Id { get; set; }
+	public Guid Id { get; set; }
 	public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string Email

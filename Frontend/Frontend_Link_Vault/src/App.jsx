@@ -4,6 +4,7 @@ import LinkCard from "./components/LinkCard";
 import SearchBar from "./components/SearchBar";
 import CategorySidebar from "./components/CategorySidebar";
 import AddLinkDialog from "./components/AddLinkDialog";
+import AuthDialog from "./components/AuthDialog";
 import "./App.css";
 
 const PLATFORMS = ["All", "TikTok", "YouTube", "Instagram", "Facebook"];
@@ -22,6 +23,16 @@ const TIME_RANGES = [
   { label: "Past month", days: 30 },
   { label: "Past year", days: 365 },
 ];
+
+function initials(name) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .map((word) => word[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
 
 function App() {
   //State for platform filter, search query, and time range filter
@@ -42,6 +53,29 @@ function App() {
   // "Now", captured once at mount. Calling Date.now() during render makes the
   // render impure (React lint flags it) — the value must be stable per render.
   const [now] = useState(() => Date.now());
+
+  // Auth state. null = logged out; { name } = logged in. Mock only — there's
+  // no backend yet, so "logging in" just means "the user typed something and
+  // clicked submit," not a real credential check.
+  const [user, setUser] = useState(null);
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const [authMode, setAuthMode] = useState("login");
+
+  function openAuth(mode) {
+    setAuthMode(mode);
+    setAuthDialogOpen(true);
+  }
+
+  function handleAuth({ name }) {
+    setUser({ name });
+    setAuthDialogOpen(false);
+  }
+
+  // Signing out only hides the UI — it does not clear links/categoryList.
+  // The mock data stays in memory so signing back in isn't a fresh start.
+  function signOut() {
+    setUser(null);
+  }
 
   // Filter the links based on the selected time range. The TIME_RANGES array is
   // a constant, so we can find the selected range by label. The range object has
@@ -115,15 +149,53 @@ function App() {
       <header className="app-header">
         <h1 className="brand">Video Link Vault</h1>
         <div className="header-actions">
-          <button className="btn-primary" onClick={() => setDialogOpen(true)}>
-            Add link +
-          </button>
-          <button className="btn-ghost">Log in</button>
+          {user ? (
+            <>
+              <button
+                className="btn-primary"
+                onClick={() => setDialogOpen(true)}
+              >
+                Add link +
+              </button>
+              <div className="user-chip">
+                <span className="user-avatar">{initials(user.name)}</span>
+                <span className="user-name">{user.name}</span>
+              </div>
+              <button className="btn-secondary" onClick={signOut}>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 8l-4 4 4 4M6 12h12"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Sign out
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="btn-secondary"
+                onClick={() => openAuth("login")}
+              >
+                Log in
+              </button>
+              <button
+                className="btn-primary"
+                onClick={() => openAuth("signup")}
+              >
+                Sign up
+              </button>
+            </>
+          )}
         </div>
       </header>
       <div className="app-body">
         <CategorySidebar
-          categories={categories}
+          categories={user ? categories : []}
           selected={category}
           onSelect={setCategory}
           onCreate={createCategory}
@@ -153,15 +225,28 @@ function App() {
               </button>
             ))}
           </div>
+          {user ? (
+            <>
+              <div className="card-grid">
+                {visibleLinks.map((link) => (
+                  <LinkCard key={link.id} link={link} onDelete={deleteLink} />
+                ))}
+              </div>
 
-          <div className="card-grid">
-            {visibleLinks.map((link) => (
-              <LinkCard key={link.id} link={link} onDelete={deleteLink} />
-            ))}
-          </div>
-
-          {visibleLinks.length === 0 && (
-            <p className="empty">No links match your filters.</p>
+              {visibleLinks.length === 0 && (
+                <p className="empty">No links match your filters.</p>
+              )}
+            </>
+          ) : (
+            <div className="empty-auth">
+              <p className="empty">No links saved yet.</p>
+              <button
+                className="btn-outline"
+                onClick={() => openAuth("signup")}
+              >
+                Add your first link
+              </button>
+            </div>
           )}
         </main>
       </div>
@@ -170,7 +255,8 @@ function App() {
         <div>
           <div>Video Link Vault</div>
           <div className="muted">
-            {links.length} saved · {visibleLinks.length} shown
+            {user ? links.length : 0} saved · {user ? visibleLinks.length : 0}{" "}
+            shown
           </div>
         </div>
         <nav className="footer-links">
@@ -187,6 +273,14 @@ function App() {
           defaultCategory={category === ALL ? categoryList[0] : category}
           onAdd={addLink}
           onClose={() => setDialogOpen(false)}
+        />
+      )}
+      {authDialogOpen && (
+        <AuthDialog
+          mode={authMode}
+          onModeChange={setAuthMode}
+          onAuth={handleAuth}
+          onClose={() => setAuthDialogOpen(false)}
         />
       )}
     </div>

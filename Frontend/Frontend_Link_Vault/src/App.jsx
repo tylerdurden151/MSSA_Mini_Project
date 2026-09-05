@@ -24,16 +24,6 @@ const TIME_RANGES = [
   { label: "Past year", days: 365 },
 ];
 
-function initials(name) {
-  return name
-    .trim()
-    .split(/\s+/)
-    .map((word) => word[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-}
-
 function App() {
   //State for platform filter, search query, and time range filter
   const [platform, setPlatform] = useState("All");
@@ -49,7 +39,7 @@ function App() {
   const normalizedQuery = query.trim().toLowerCase();
   // The saved links themselves. Seeded from mock data, then owned by the user —
   // Step 8 is the first step where this is no longer a fixed module constant.
-  const [links, setLinks] = useState(mockLinks);
+  const [links, setLinks] = useState([]);
   // "Now", captured once at mount. Calling Date.now() during render makes the
   // render impure (React lint flags it) — the value must be stable per render.
   const [now] = useState(() => Date.now());
@@ -66,8 +56,12 @@ function App() {
     setAuthDialogOpen(true);
   }
 
-  function handleAuth({ name }) {
+  function handleAuth({ name, seedMockData }) {
     setUser({ name });
+    if (seedMockData) {
+      setLinks(mockLinks);
+      setCategoryList([...new Set(mockLinks.map((link) => link.category))]);
+    }
     setAuthDialogOpen(false);
   }
 
@@ -102,9 +96,7 @@ function App() {
   });
 
   // The user's categories. Seeded once from the mock data, then owned by the user.
-  const [categoryList, setCategoryList] = useState(() => [
-    ...new Set(mockLinks.map((link) => link.category)),
-  ]);
+  const [categoryList, setCategoryList] = useState([]);
 
   // Count how many links are in each category (name -> count)
   const categoryCounts = new Map();
@@ -143,6 +135,18 @@ function App() {
   function deleteLink(id) {
     setLinks(links.filter((link) => link.id !== id));
   }
+
+  //User icon initials helper.
+  function initials(name) {
+    return name
+      .trim()
+      .split(/\s+/)
+      .map((word) => word[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
+  }
+
   return (
     //Header
     <div className="app">
@@ -226,17 +230,29 @@ function App() {
             ))}
           </div>
           {user ? (
-            <>
-              <div className="card-grid">
-                {visibleLinks.map((link) => (
-                  <LinkCard key={link.id} link={link} onDelete={deleteLink} />
-                ))}
+            links.length === 0 ? (
+              <div className="empty-auth">
+                <p className="empty">No links saved yet.</p>
+                <button
+                  className="btn-outline"
+                  onClick={() => setDialogOpen(true)}
+                >
+                  Add your first link
+                </button>
               </div>
+            ) : (
+              <>
+                <div className="card-grid">
+                  {visibleLinks.map((link) => (
+                    <LinkCard key={link.id} link={link} onDelete={deleteLink} />
+                  ))}
+                </div>
 
-              {visibleLinks.length === 0 && (
-                <p className="empty">No links match your filters.</p>
-              )}
-            </>
+                {visibleLinks.length === 0 && (
+                  <p className="empty">No links match your filters.</p>
+                )}
+              </>
+            )
           ) : (
             <div className="empty-auth">
               <p className="empty">No links saved yet.</p>

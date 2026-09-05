@@ -81,7 +81,7 @@
 .seg-opt-active {
   border-color: var(--accent);
   color: var(--accent);
-  background: rgba(145, 132, 217, 0.12);
+  background: rgba(220, 53, 69, 0.12);
 }
 
 .dialog-actions {

@@ -14,7 +14,6 @@ public class User
         {
             return _email;
         }
-
         set
         {
             // Requirement #1: Email cannot be empty

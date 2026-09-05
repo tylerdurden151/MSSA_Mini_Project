@@ -14,6 +14,11 @@ public class UserStore
                 email,
                 StringComparison.OrdinalIgnoreCase));
     }
+
+    public User? FindById(Guid id)
+    {
+        return _users.FirstOrDefault(u => u.Id == id);
+    }
     public User Add(User user)
     {
         user.Id = Guid.NewGuid();

@@ -12,11 +12,17 @@ public class AuthController : ControllerBase
 {
     private readonly UserStore _userStore;
     private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly VideoLinkStore _videoLinkStore;
 
-    public AuthController(UserStore userStore, IPasswordHasher<User> passwordHasher)
+    // Hardcoded on purpose, not configuration: this is the one demo account
+    // Every other account starts genuinely empty.
+    private const string DemoAccountEmail = "timothy@example.com";
+
+    public AuthController(UserStore userStore, IPasswordHasher<User> passwordHasher, VideoLinkStore videoLinkStore)
     {
         _userStore = userStore;
         _passwordHasher = passwordHasher;
+        _videoLinkStore = videoLinkStore;
     }
 
     [HttpPost("register")]
@@ -41,6 +47,10 @@ public class AuthController : ControllerBase
 
         _userStore.Add(user);
 
+        if (string.Equals(user.Email, DemoAccountEmail, StringComparison.OrdinalIgnoreCase))
+        {
+            _videoLinkStore.SeedDemoData(user.Id);
+        }
         return Ok(ToResponse(user));
     }
 

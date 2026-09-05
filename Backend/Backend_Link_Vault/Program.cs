@@ -12,6 +12,19 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
+//CORS policy for allowing requests from the frontend development server
+const string FrontendCorsPolicy = "FrontendDev";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(FrontendCorsPolicy, policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 //One shared in-memory user store for the application
 builder.Services.AddSingleton<UserStore>();
 
@@ -25,6 +38,8 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
+// Enable the CORS policy
+app.UseCors(FrontendCorsPolicy);
 
 app.MapControllers();
 

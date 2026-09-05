@@ -40,5 +40,5 @@ public class User
             _email = value;
         }
     }
-    public string Password { get; set; } = string.Empty;
+    public string PasswordHash { get; set; } = string.Empty;
 }

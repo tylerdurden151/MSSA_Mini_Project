@@ -1,8 +1,9 @@
-﻿using System;
+﻿namespace Backend_Link_Vault.DTO;
 
-public class Class1
+public class UserResponse
 {
-	public Class1()
-	{
-	}
+    public Guid Id { get; set; }
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
 }

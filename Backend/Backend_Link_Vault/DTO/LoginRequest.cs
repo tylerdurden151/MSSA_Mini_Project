@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+
 namespace Backend_Link_Vault.DTO;
 public class LoginRequest {
 
@@ -7,5 +8,5 @@ public class LoginRequest {
     public string Email { get; set; } = string.Empty;
 
     [Required]
-    public string Password { get; set; } = string.Empty;
+    public string PasswordHash { get; set; } = string.Empty;
 }

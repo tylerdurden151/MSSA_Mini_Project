@@ -18,5 +18,5 @@ public class RegisterRequest
 
     [Required]
     [MinLength(8)]
-    public string Password { get; set; } = string.Empty;
+    public string PasswordHash { get; set; } = string.Empty;
 }

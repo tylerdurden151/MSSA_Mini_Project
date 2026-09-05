@@ -2,8 +2,7 @@
 
 namespace Backend_Link_Vault.Services;
 
-// Singleton, in-memory — same pattern as UserStore, same caveat: this
-// resets to empty every time the app restarts. No persistence until the
+ No persistence until the
 // Postgres phase.
 public class VideoLinkStore
 {
@@ -20,11 +19,6 @@ public class VideoLinkStore
         _links.Add(link);
         return link;
     }
-
-    // Returns false (rather than throwing) when there's nothing to delete,
-    // so the controller can turn that into a plain 404 instead of a 500.
-    // Scoped to userId as well as linkId so one account can never delete
-    // another account's link just by guessing its id.
     public bool Delete(Guid userId, Guid linkId)
     {
         var link = _links.FirstOrDefault(l => l.Id == linkId && l.UserId == userId);
@@ -34,10 +28,7 @@ public class VideoLinkStore
         return true;
     }
 
-    // Ported directly from the frontend's mockData/mockLinks.js so the demo
-    // account's seeded vault looks identical to what the frontend used to
-    // fake client-side. Only ever called once, right after that one
-    // hardcoded demo account registers — see AuthController.
+
     public void SeedDemoData(Guid userId)
     {
         DateTime DaysAgo(int n) => DateTime.UtcNow.AddDays(-n);

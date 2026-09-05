@@ -4,8 +4,8 @@ namespace Backend_Link_Vault.Models;
 
 public class User
 {
-	private string _email; 
-	public Guid Id { get; set; }
+	private string _email = string.Empty;
+    public Guid Id { get; set; }
 	public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string Email
@@ -41,5 +41,4 @@ public class User
     }
     public string PasswordHash { get; set; } = string.Empty;
 
-    public string? ThumbnailUrl { get; set; }
 }

@@ -8,6 +8,13 @@ import "./App.css";
 
 const PLATFORMS = ["All", "TikTok", "YouTube", "Instagram", "Facebook"];
 
+const PLATFORM_COLORS = {
+  TikTok: "#EE1D52",
+  YouTube: "#FF0000",
+  Instagram: "#C13584",
+  Facebook: "#1877F2",
+};
+
 const ALL = "All links";
 const TIME_RANGES = [
   { label: "Any time", days: null },
@@ -135,6 +142,11 @@ function App() {
               <button
                 key={name}
                 className={name === platform ? "chip chip-active" : "chip"}
+                style={
+                  PLATFORM_COLORS[name]
+                    ? { "--chip-brand": PLATFORM_COLORS[name] }
+                    : undefined
+                }
                 onClick={() => setPlatform(name)}
               >
                 {name}

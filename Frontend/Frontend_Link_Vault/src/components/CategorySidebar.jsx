@@ -34,17 +34,41 @@ function CategorySidebar({ categories, selected, onSelect, onCreate }) {
       ))}
 
       {newCategoryOpen ? (
-        <input
-          className="cat-input"
-          autoFocus
-          placeholder="Category name"
-          value={newCategory}
-          onChange={(e) => setNewCategory(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") submit();
-            if (e.key === "Escape") cancel();
+        <div
+          className="cat-input-row"
+          onBlur={(e) => {
+            if (!e.currentTarget.contains(e.relatedTarget)) cancel();
           }}
-        />
+        >
+          <input
+            className="cat-input"
+            autoFocus
+            placeholder="Category name"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") submit();
+              if (e.key === "Escape") cancel();
+            }}
+          />
+          <button
+            type="button"
+            className="cat-confirm"
+            aria-label="Create category"
+            onClick={submit}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M5 13l4 4L19 7"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
       ) : (
         <button className="cat-new" onClick={() => setNewCategoryOpen(true)}>
           + New category

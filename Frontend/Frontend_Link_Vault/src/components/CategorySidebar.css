@@ -72,9 +72,16 @@
   color: var(--accent);
 }
 
-.cat-input {
-  width: 100%;
+.cat-input-row {
+  display: flex;
+  gap: 6px;
   margin-top: 10px;
+  align-items: center;
+}
+
+.cat-input {
+  flex: 1;
+  min-width: 0;
   padding: 8px 10px;
   border: 1px solid var(--accent);
   border-radius: 8px;
@@ -89,4 +96,28 @@
 
 .cat-input:focus {
   outline: none;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.35);
+}
+
+.cat-confirm {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+.cat-confirm svg {
+  width: 16px;
+  height: 16px;
+}
+
+.cat-confirm:hover {
+  opacity: 0.9;
 }

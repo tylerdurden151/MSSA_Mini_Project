@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { mockLinks } from "./mockData/mockLinks";
+import { API_BASE_URL } from "./config";
 import LinkCard from "./components/LinkCard";
 import SearchBar from "./components/SearchBar";
 import CategorySidebar from "./components/CategorySidebar";
@@ -56,13 +56,26 @@ function App() {
     setAuthDialogOpen(true);
   }
 
-  function handleAuth({ name, seedMockData }) {
-    setUser({ name });
-    if (seedMockData) {
-      setLinks(mockLinks);
-      setCategoryList([...new Set(mockLinks.map((link) => link.category))]);
-    }
+  async function handleAuth(apiUser) {
+    setUser({
+      id: apiUser.id,
+      name: `${apiUser.firstName} ${apiUser.lastName}`,
+    });
     setAuthDialogOpen(false);
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/videolinks/${apiUser.id}`,
+      );
+      if (response.ok) {
+        const serverLinks = await response.json();
+        setLinks(serverLinks);
+        setCategoryList([...new Set(serverLinks.map((link) => link.category))]);
+      }
+    } catch {
+      // Non-fatal: they're still logged in, just starts with an empty-looking
+      // vault if the links request itself failed (e.g. server hiccup).
+    }
   }
 
   // Signing out only hides the UI — it does not clear links/categoryList.

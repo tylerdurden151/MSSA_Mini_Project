@@ -9,11 +9,7 @@ public class CreateVideoLinkRequest
     [Url]
     public string Url { get; set; } = string.Empty;
 
-    // Nullable enum, not plain Platform: [Required] on a non-nullable value
-    // type is a known no-op (a missing "platform" field would just silently
-    // bind to the enum's default value, TikTok, instead of failing
-    // validation). Making it nullable is what lets [Required] actually catch
-    // a client that forgot to send it.
+
     [Required]
     public Platform? Platform { get; set; }
 

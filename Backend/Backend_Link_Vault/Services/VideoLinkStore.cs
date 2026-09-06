@@ -2,7 +2,7 @@
 
 namespace Backend_Link_Vault.Services;
 
- No persistence until the
+ 
 // Postgres phase.
 public class VideoLinkStore
 {

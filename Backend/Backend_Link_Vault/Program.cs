@@ -36,6 +36,28 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 var app = builder.Build();
 
+//preloaded data for testing
+// Seed one known demo account on every startup, so it's available to log
+// in with immediately — without needing to register it again after every
+// restart, since UserStore/VideoLinkStore are in-memory and wipe on restart.
+using (var scope = app.Services.CreateScope())
+{
+    var userStore = scope.ServiceProvider.GetRequiredService<UserStore>();
+    var videoLinkStore = scope.ServiceProvider.GetRequiredService<VideoLinkStore>();
+    var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
+
+    var demoUser = new User
+    {
+        FirstName = "Timothy",
+        LastName = "Eckart",
+        Email = "timothy@example.com",
+    };
+    demoUser.PasswordHash = passwordHasher.HashPassword(demoUser, "video123");
+
+    userStore.Add(demoUser);
+    videoLinkStore.SeedDemoData(demoUser.Id);
+}
+
 app.UseHttpsRedirection();
 
 // Enable the CORS policy

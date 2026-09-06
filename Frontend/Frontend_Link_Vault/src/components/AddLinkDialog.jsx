@@ -2,7 +2,6 @@ import { useState } from "react";
 import { API_BASE_URL } from "../config";
 import "./AddLinkDialog.css";
 
-// Guess the platform from the URL itself, same rule the real capstone's
 // oEmbed step will eventually replace. Falls back to "Unknown".
 function detectPlatform(url) {
   const u = url.toLowerCase();
@@ -11,6 +10,27 @@ function detectPlatform(url) {
   if (u.includes("instagram")) return "Instagram";
   if (u.includes("facebook") || u.includes("fb.watch")) return "Facebook";
   return "Unknown";
+}
+// YouTube serves thumbnails at a predictable, public URL — no API key
+function getYouTubeThumbnail(url) {
+  try {
+    const parsed = new URL(url);
+    let videoId = null;
+
+    if (parsed.hostname.includes("youtu.be")) {
+      videoId = parsed.pathname.slice(1);
+    } else if (parsed.pathname.startsWith("/shorts/")) {
+      videoId = parsed.pathname.split("/shorts/")[1];
+    } else {
+      videoId = parsed.searchParams.get("v");
+    }
+
+    return videoId
+      ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+      : null;
+  } catch {
+    return null;
+  }
 }
 
 function AddLinkDialog({
@@ -52,6 +72,8 @@ function AddLinkDialog({
           .filter((t) => t !== ""),
       ),
     ];
+    const thumbnailUrl =
+      platform === "YouTube" ? getYouTubeThumbnail(url.trim()) : null;
 
     setSubmitting(true);
 
@@ -64,7 +86,7 @@ function AddLinkDialog({
           url: url.trim(),
           platform,
           title: title.trim() || `Untitled ${platform} link`,
-          thumbnailUrl: null,
+          thumbnailUrl,
           category,
           tags: cleanTags,
         }),

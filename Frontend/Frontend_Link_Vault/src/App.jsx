@@ -51,6 +51,8 @@ function App() {
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [authMode, setAuthMode] = useState("login");
 
+  const [linksError, setLinksError] = useState("");
+
   function openAuth(mode) {
     setAuthMode(mode);
     setAuthDialogOpen(true);
@@ -149,8 +151,22 @@ function App() {
   }
 
   // Remove a link by id. .filter() returns a new array, so React sees the change.
-  function deleteLink(id) {
-    setLinks(links.filter((link) => link.id !== id));
+  async function deleteLink(id) {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/videolinks/${user.id}/${id}`,
+        { method: "DELETE" },
+      );
+
+      if (!response.ok) {
+        console.error("Delete failed:", response.status);
+        return;
+      }
+
+      setLinks(links.filter((link) => link.id !== id));
+    } catch (err) {
+      console.error("Couldn't reach the server to delete link:", err);
+    }
   }
 
   //User icon initials helper.
@@ -229,7 +245,7 @@ function App() {
             onTimeRangeChange={setTimeRange}
             ranges={TIME_RANGES}
           />
-
+          {linksError && <p className="links-error">{linksError}</p>}
           <div className="chips">
             {PLATFORMS.map((name) => (
               <button

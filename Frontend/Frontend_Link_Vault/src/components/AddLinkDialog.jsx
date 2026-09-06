@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_BASE_URL } from "../config";
 import "./AddLinkDialog.css";
 
 // Guess the platform from the URL itself, same rule the real capstone's
@@ -13,6 +14,7 @@ function detectPlatform(url) {
 }
 
 function AddLinkDialog({
+  userId,
   platforms,
   categoryOptions,
   defaultCategory,
@@ -25,12 +27,22 @@ function AddLinkDialog({
   // null = "not overridden yet" -> follow whatever detectPlatform(url) says
   const [platformOverride, setPlatformOverride] = useState(null);
   const [category, setCategory] = useState(defaultCategory);
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const detected = detectPlatform(url);
   const platform = platformOverride ?? detected;
 
-  function submit() {
+  async function submit() {
+    setError("");
+
     if (url.trim() === "") return;
+
+    //If user has not selected a platform and the detected platform is unknown, show an error
+    if (platform === "Unknown") {
+      setError("We couldn't tell which platform that's from — pick one above.");
+      return;
+    }
 
     const cleanTags = [
       ...new Set(
@@ -41,18 +53,36 @@ function AddLinkDialog({
       ),
     ];
 
-    onAdd({
-      id: crypto.randomUUID(),
-      url: url.trim(),
-      platform,
-      title: title.trim() || `Untitled ${platform} link`,
-      thumbnailUrl: null,
-      category,
-      tags: cleanTags,
-      createdAtUtc: new Date().toISOString(),
-    });
+    setSubmitting(true);
 
-    onClose();
+    try {
+      //Adding url to the database via the API
+      const response = await fetch(`${API_BASE_URL}/api/videolinks/${userId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: url.trim(),
+          platform,
+          title: title.trim() || `Untitled ${platform} link`,
+          thumbnailUrl: null,
+          category,
+          tags: cleanTags,
+        }),
+      });
+
+      if (!response.ok) {
+        setError("Couldn't save that link. Please try again.");
+        return;
+      }
+
+      const savedLink = await response.json();
+      onAdd(savedLink);
+      onClose();
+    } catch {
+      setError("Couldn't reach the server. Is the API running?");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -142,6 +172,7 @@ function AddLinkDialog({
               onChange={(e) => setTags(e.target.value)}
             />
           </label>
+          {error && <p className="dialog-error">{error}</p>}
         </div>
 
         <div className="dialog-actions">

@@ -62,6 +62,7 @@ function App() {
       name: `${apiUser.firstName} ${apiUser.lastName}`,
     });
     setAuthDialogOpen(false);
+    setLinksError("");
 
     try {
       const response = await fetch(
@@ -70,11 +71,15 @@ function App() {
       if (response.ok) {
         const serverLinks = await response.json();
         setLinks(serverLinks);
-        setCategoryList([...new Set(serverLinks.map((link) => link.category))]);
+        const categories = [
+          ...new Set(serverLinks.map((link) => link.category)),
+        ];
+        setCategoryList(categories.length > 0 ? categories : ["General"]);
+      } else {
+        setLinksError("Couldn't load your links. Try refreshing.");
       }
     } catch {
-      // Non-fatal: they're still logged in, just starts with an empty-looking
-      // vault if the links request itself failed (e.g. server hiccup).
+      setLinksError("Couldn't reach the server. Is the API running?");
     }
   }
 
@@ -85,8 +90,7 @@ function App() {
   }
 
   // Filter the links based on the selected time range. The TIME_RANGES array is
-  // a constant, so we can find the selected range by label. The range object has
-  // a .days property, which is either null (no limit) or a number of days.
+  // a constant, so we can find the selected range by label.
   const range = TIME_RANGES.find((r) => r.label === timeRange);
 
   // Filter the mockLinks based on platform, search query, and time range
@@ -297,6 +301,7 @@ function App() {
       </footer>
       {dialogOpen && (
         <AddLinkDialog
+          userId={user.id}
           platforms={PLATFORMS.slice(1)}
           categoryOptions={categoryList}
           defaultCategory={category === ALL ? categoryList[0] : category}

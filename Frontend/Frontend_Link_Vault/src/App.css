@@ -202,3 +202,10 @@
   font-size: 14px;
   padding: 24px 4px;
 }
+
+.links-error {
+  color: #f5a623;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0 0 12px;
+}

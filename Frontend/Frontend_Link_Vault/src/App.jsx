@@ -53,6 +53,8 @@ function App() {
 
   const [linksError, setLinksError] = useState("");
 
+  const [loadingLinks, setLoadingLinks] = useState(false);
+
   function openAuth(mode) {
     setAuthMode(mode);
     setAuthDialogOpen(true);
@@ -65,6 +67,7 @@ function App() {
     });
     setAuthDialogOpen(false);
     setLinksError("");
+    setLoadingLinks(true);
 
     try {
       const response = await fetch(
@@ -82,6 +85,8 @@ function App() {
       }
     } catch {
       setLinksError("Couldn't reach the server. Is the API running?");
+    } finally {
+      setLoadingLinks(false);
     }
   }
 
@@ -152,6 +157,7 @@ function App() {
 
   // Remove a link by id. .filter() returns a new array, so React sees the change.
   async function deleteLink(id) {
+    setLinksError("");
     try {
       const response = await fetch(
         `${API_BASE_URL}/api/videolinks/${user.id}/${id}`,
@@ -159,16 +165,15 @@ function App() {
       );
 
       if (!response.ok) {
-        console.error("Delete failed:", response.status);
+        setLinksError("Couldn't delete that link. Please try again.");
         return;
       }
 
       setLinks(links.filter((link) => link.id !== id));
-    } catch (err) {
-      console.error("Couldn't reach the server to delete link:", err);
+    } catch {
+      setLinksError("Couldn't reach the server. Is the API running?");
     }
   }
-
   //User icon initials helper.
   function initials(name) {
     return name

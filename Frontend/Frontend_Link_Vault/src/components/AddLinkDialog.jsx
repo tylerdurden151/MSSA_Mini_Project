@@ -12,6 +12,7 @@ function detectPlatform(url) {
   return "Unknown";
 }
 // YouTube serves thumbnails at a predictable, public URL — no API key
+// placeholder thumbnail for other platforms will be handled by the backend (oEmbed) in the future
 function getYouTubeThumbnail(url) {
   try {
     const parsed = new URL(url);

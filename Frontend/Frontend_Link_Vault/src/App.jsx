@@ -268,7 +268,9 @@ function App() {
             ))}
           </div>
           {user ? (
-            links.length === 0 ? (
+            loadingLinks ? (
+              <p className="empty">Loading your links…</p>
+            ) : links.length === 0 ? (
               <div className="empty-auth">
                 <p className="empty">No links saved yet.</p>
                 <button

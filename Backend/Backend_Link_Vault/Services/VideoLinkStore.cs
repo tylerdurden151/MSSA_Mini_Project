@@ -35,6 +35,7 @@ public class VideoLinkStore
 
         var seed = new List<VideoLink>
         {
+            new() { UserId = userId, Url = "https://youtube.com/shorts/IuOt6euql7s", Platform = Platform.YouTube, Title = "Lovestruck", ThumbnailUrl = "https://img.youtube.com/vi/IuOt6euql7s/hqdefault.jpg", Category = "kennygifs", Tags = new() { "funny" }, CreatedAtUtc = DaysAgo(3) },
             new() { UserId = userId, Url = "https://www.tiktok.com/@chef/video/1111111111", Platform = Platform.TikTok, Title = "15-minute weeknight pasta", Category = "Cooking", Tags = new() { "recipe", "quick" }, CreatedAtUtc = DaysAgo(1) },
             new() { UserId = userId, Url = "https://www.youtube.com/watch?v=2222222222", Platform = Platform.YouTube, Title = "Building a deck in React — full walkthrough", Category = "Learning", Tags = new() { "tutorial", "react" }, CreatedAtUtc = DaysAgo(3) },
             new() { UserId = userId, Url = "https://www.instagram.com/reel/3333333333/", Platform = Platform.Instagram, Title = "Studio apartment tour, 400 sq ft", Category = "Home", Tags = new() { "home" }, CreatedAtUtc = DaysAgo(6) },
@@ -45,6 +46,8 @@ public class VideoLinkStore
             new() { UserId = userId, Url = "https://www.tiktok.com/@office/video/8888888888", Platform = Platform.TikTok, Title = "Office small talk, ranked", Category = "Humor", Tags = new() { "comedy" }, CreatedAtUtc = DaysAgo(24) },
             new() { UserId = userId, Url = "https://www.youtube.com/watch?v=9999999999", Platform = Platform.YouTube, Title = "Sourdough starter, day by day", Category = "Cooking", Tags = new() { "recipe", "baking" }, CreatedAtUtc = DaysAgo(40) },
             new() { UserId = userId, Url = "https://www.instagram.com/reel/1010101010/", Platform = Platform.Instagram, Title = "Azure deployment in five minutes", Category = "Learning", Tags = new() { "tutorial", "cloud" }, CreatedAtUtc = DaysAgo(55) },
+            new() { UserId = userId, Url = "https://youtube.com/shorts/c7yKn5MxC8c", Platform = Platform.YouTube, Title = "Postman", ThumbnailUrl = "https://img.youtube.com/vi/c7yKn5MxC8c/hqdefault.jpg", Category = "kennygifs", Tags = new() { "funny" }, CreatedAtUtc = DaysAgo(55) },
+            new() { UserId = userId, Url = "https://youtube.com/shorts/nb9PLFx5y1M", Platform = Platform.YouTube, Title = "Could you?", ThumbnailUrl = "https://img.youtube.com/vi/nb9PLFx5y1M/hqdefault.jpg", Category = "kennygifs", Tags = new() { "funny" }, CreatedAtUtc = DaysAgo(60) },
         };
 
         foreach (var link in seed)

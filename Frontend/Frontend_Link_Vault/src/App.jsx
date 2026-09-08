@@ -61,6 +61,7 @@ function App() {
     setAuthMode(mode); // "login" or "signup" — controls which fields AuthDialog shows
     setAuthDialogOpen(true); // flips the flag that gates rendering
   }
+
   // Handle a successful login or signup. The apiUser object comes from the
   // backend response and contains the user's id, firstName, and lastName.
   async function handleAuth(apiUser) {
@@ -105,7 +106,7 @@ function App() {
   // a constant, so we can find the selected range by label.
   const range = TIME_RANGES.find((r) => r.label === timeRange);
 
-  // Filter the mockLinks based on platform, search query, and time range
+  // Filter the links based on platform, search query, and time range
   const visibleLinks = links.filter((link) => {
     const matchesPlatform = platform === "All" || link.platform === platform;
 

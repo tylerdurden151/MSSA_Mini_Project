@@ -44,9 +44,9 @@ function App() {
   // render impure (React lint flags it) — the value must be stable per render.
   const [now] = useState(() => Date.now());
 
-  // Auth state. null = logged out; { name } = logged in. Mock only — there's
-  // no backend yet, so "logging in" just means "the user typed something and
-  // clicked submit," not a real credential check.
+  // Auth state. null = logged out; { id, name } = logged in. id comes from
+  // the real backend response and is required for every subsequent
+  // /api/videolinks/{userId} call — it's not just a display value.
   const [user, setUser] = useState(null);
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [authMode, setAuthMode] = useState("login");
@@ -55,11 +55,14 @@ function App() {
 
   const [loadingLinks, setLoadingLinks] = useState(false);
 
+  // Open the auth dialog in the given mode. The dialog itself will call back
+  // to handleAuth() on success, which sets the user and fetches their links.
   function openAuth(mode) {
-    setAuthMode(mode);
-    setAuthDialogOpen(true);
+    setAuthMode(mode); // "login" or "signup" — controls which fields AuthDialog shows
+    setAuthDialogOpen(true); // flips the flag that gates rendering
   }
-
+  // Handle a successful login or signup. The apiUser object comes from the
+  // backend response and contains the user's id, firstName, and lastName.
   async function handleAuth(apiUser) {
     setUser({
       id: apiUser.id,
@@ -69,6 +72,8 @@ function App() {
     setLinksError("");
     setLoadingLinks(true);
 
+    // Fetch the user's links from the backend API. This is the first time we
+    // call the real backend, so we need to handle errors and show a loading state.
     try {
       const response = await fetch(
         `${API_BASE_URL}/api/videolinks/${apiUser.id}`,
@@ -150,6 +155,7 @@ function App() {
     setCategoryList([...categoryList, name]);
     setCategory(name);
   }
+
   // Add a new link. App owns the list, so App is where it changes.
   function addLink(newLink) {
     setLinks([newLink, ...links]);
@@ -306,7 +312,6 @@ function App() {
           )}
         </main>
       </div>
-
       <footer className="app-footer">
         <div>
           <div>Video Link Vault</div>
@@ -322,6 +327,8 @@ function App() {
           <a href="#">Help</a>
         </nav>
       </footer>
+      //Components for the add link dialog and auth dialog. These are
+      //conditionally rendered based on the state of the app.
       {dialogOpen && (
         <AddLinkDialog
           userId={user.id}

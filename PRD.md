@@ -37,18 +37,33 @@ No inheritance hierarchy — scope is intentionally small. Composition and inter
 Monorepo, two sibling projects (`MSSA_Mini_Project`, cloned outside OneDrive so background sync can't corrupt `.git`):
 
     MSSA_Mini_Project/
-      Backend/Backend_Link_Vault/         (ASP.NET Core Web API)
-        Models/        Platform.cs  VideoLink.cs  User.cs
-        DTO/           CreateVideoLinkRequest.cs  RegisterRequest.cs
-                       LoginRequest.cs  UserResponse.cs
-        Services/      UserStore.cs  VideoLinkStore.cs
-        Controllers/   VideoLinksController.cs  AuthController.cs
-        Program.cs                        (DI, CORS, JSON enum converter, demo seed)
-      Frontend/Frontend_Link_Vault/       (React 19 + Vite)
-        src/App.jsx                       (owns links, categories, filters, auth state)
-        src/config.js                     (API base URL)
-        src/components/  LinkCard  CategorySidebar  SearchBar
-                         AddLinkDialog  AuthDialog   (each with co-located .css)
+    ├── Backend/Backend_Link_Vault/        ASP.NET Core Web API
+    │   ├── Models/
+    │   │   ├── Platform.cs
+    │   │   ├── VideoLink.cs
+    │   │   └── User.cs
+    │   ├── DTO/
+    │   │   ├── CreateVideoLinkRequest.cs
+    │   │   ├── RegisterRequest.cs
+    │   │   ├── LoginRequest.cs
+    │   │   └── UserResponse.cs
+    │   ├── Services/
+    │   │   ├── UserStore.cs
+    │   │   └── VideoLinkStore.cs
+    │   ├── Controllers/
+    │   │   ├── VideoLinksController.cs
+    │   │   └── AuthController.cs
+    │   └── Program.cs                     DI, CORS, JSON enum converter, demo seed
+    └── Frontend/Frontend_Link_Vault/      React 19 + Vite
+        └── src/
+            ├── App.jsx                    owns links, categories, filters, auth state
+            ├── config.js                  API base URL
+            └── components/                each with a co-located .css
+                ├── LinkCard.jsx
+                ├── CategorySidebar.jsx
+                ├── SearchBar.jsx
+                ├── AddLinkDialog.jsx
+                └── AuthDialog.jsx
 
 **Endpoints**
 

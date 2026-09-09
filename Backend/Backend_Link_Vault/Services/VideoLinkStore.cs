@@ -10,17 +10,20 @@ public class VideoLinkStore
 
     public IReadOnlyList<VideoLink> GetForUser(Guid userId)
     {
+        //LINQ query to filter the links by userId and return a read-only list
         return _links.Where(l => l.UserId == userId).ToList().AsReadOnly();
     }
 
     public VideoLink Add(VideoLink link)
     {
+        //LINQ quey to add a new link to the list and assign a new GUID to the link's Id property
         link.Id = Guid.NewGuid();
         _links.Add(link);
         return link;
     }
     public bool Delete(Guid userId, Guid linkId)
     {
+        //LINQ query to find a link by its ID and user ID, and remove it if found
         var link = _links.FirstOrDefault(l => l.Id == linkId && l.UserId == userId);
         if (link is null) return false;
 

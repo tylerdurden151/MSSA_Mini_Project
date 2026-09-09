@@ -8,6 +8,7 @@ public class UserStore
 
     public User? FindByEmail(string email)
     {
+        //LINQ query to find the user by email, ignoring case sensitivity
         return _users.FirstOrDefault(u =>
             string.Equals(
                 u.Email,
@@ -17,10 +18,12 @@ public class UserStore
 
     public User? FindById(Guid id)
     {
+        //LINQ query to find the user by Id
         return _users.FirstOrDefault(u => u.Id == id);
     }
     public User Add(User user)
     {
+        //LINQ query to add a new user to the list, ensuring the email is unique
         user.Id = Guid.NewGuid();
         _users.Add(user);
         return user;

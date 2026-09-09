@@ -328,8 +328,6 @@ function App() {
           <a href="#">Help</a>
         </nav>
       </footer>
-      //Components for the add link dialog and auth dialog. These are
-      //conditionally rendered based on the state of the app.
       {dialogOpen && (
         <AddLinkDialog
           userId={user.id}

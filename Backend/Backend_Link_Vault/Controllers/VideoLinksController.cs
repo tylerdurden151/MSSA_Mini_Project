@@ -18,7 +18,7 @@ public class VideoLinksController : ControllerBase
         _userStore = userStore;
     }
 
-
+    //IEnumerable when it returns data, that data will be a sequence/collection of VideoLink objects
     [HttpGet("{userId}")]
     public ActionResult<IEnumerable<VideoLink>> GetForUser(Guid userId)
     {
@@ -30,6 +30,10 @@ public class VideoLinksController : ControllerBase
         return Ok(_videoLinkStore.GetForUser(userId));
     }
 
+    // The Create method is an HTTP POST endpoint that allows the creation of a new video link for a specific user.
+    // It takes a userId and a CreateVideoLinkRequest object as parameters.
+    // The method first checks if the user exists; if not, it returns a 404 Not Found response.
+    // If the user exists, it creates a new VideoLink object with the provided data, adds it to the VideoLinkStore, and returns the created link with a 200 OK response.
     [HttpPost("{userId}")]
     public ActionResult<VideoLink> Create(Guid userId, CreateVideoLinkRequest request)
     {
@@ -72,5 +76,7 @@ public class VideoLinksController : ControllerBase
         return NoContent();
     }
 
+    //helper method to check if a user exists in the UserStore by their userId.
+    //It returns true if the user is found, otherwise false.
     private bool UserExists(Guid userId) => _userStore.FindById(userId) is not null;
 }
